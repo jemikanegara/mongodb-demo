@@ -38,4 +38,53 @@ app.get("/", (req, res) => {
   res.send("hello");
 });
 
+// Create
+app.post("/customers", (req, res) => {
+  Customer.create(req.body, (err, customer) => {
+    if (err) return res.send(err);
+    res.send(customer);
+  });
+});
+
+// Search By Name
+app.get("/customers/search", (req, res) => {
+  Customer.find(
+    {
+      $or: [
+        { first_name: req.query.firstname },
+        { last_name: req.query.lastname }
+      ]
+    },
+    (err, customers) => {
+      if (err) return res.send(err);
+      res.send(customers);
+    }
+  );
+});
+// Get All
+app.get("/customers", (req, res) => {
+  Customer.find({}, (err, customers) => {
+    if (err) return res.send(err);
+
+    res.send(customers);
+  });
+});
+
+// Get One
+app.get("/customers/:_id", (req, res) => {
+  Customer.findById(req.params._id, (err, customer) => {
+    if (err) return res.send(err);
+
+    res.send(customer);
+  });
+});
+
+// Delete One
+app.delete("/customers/:id", (req, res) => {
+  Customer.findByIdAndRemove(req.params.id, (err, customers) => {
+    if (err) return res.send(err);
+    res.send(customers);
+  });
+});
+
 app.listen(PORT, () => console.log(`App Running on Port ${PORT}`));
